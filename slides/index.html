@@ -24,12 +24,12 @@
 </div>
 <div><p>Today</p>
 <ul>
-<li>I&#39;ll introduce TDD and some of its ~rules~ guidelines</li>
+<li>I&#39;ll introduce TDD and some of its guidelines</li>
 <li>We will run through an example together</li>
 <li>You will build on our example using TDD</li>
 </ul>
 </div>
-<div><h2 id="this-workshop-and-these-slides-are-available-online">This workshop and these slides are available online</h2>
+<div><h2 id="these-slides-are-available-online">These slides are available online</h2>
 <p><a href="https://github.com/sesh/django-tdd">https://github.com/sesh/django-tdd</a></p>
 </div>
 <div><p>So, what is TDD?</p>
@@ -85,6 +85,14 @@
 <div><pre><code class="lang-python">def test_is_prime_negative(self):
     self.assertFalse(is_prime(-1))
 </code></pre>
+</div>
+<div><p>In Python tests live it files that start with &quot;test&quot;</p>
+</div>
+<div><p>In Django, we normally create test classes based on <code>django.test.TestCase</code></p>
+</div>
+<div><p>There are <em>other unittest.TestCase subclasses</em> that let you do different things</p>
+</div>
+<div><p>They all provide the <em>Django test Client</em> which we will use to make API calls</p>
 </div>
 <div><p>Let&#39;s write an API</p>
 </div>
@@ -433,11 +441,14 @@ class TimeApiTestCase(TestCase):
 </div>
 <div><p>Now it&#39;s your turn</p>
 </div>
+<div><p>You can grab the code up until this point at:</p>
+<p><a href="https://github.com/sesh/time-tdd">https://github.com/sesh/time-tdd</a></p>
+</div>
 <div><h2 id="challenge-1">Challenge #1</h2>
 <p>As a user I want to receive the current time in the timezone that I provide so I can see what time it is</p>
 </div>
 <div><ul>
-<li><p>The <code>/api/time/</code> should accept a <code>timezone</code> query parameter that provides a timezone in the IANA &quot;Australia/Melbourne&quot; format</p>
+<li><p>The <code>/api/time/</code> endpoint should accept a <code>timezone</code> query parameter that provides a timezone in the IANA &quot;Australia/Melbourne&quot; format</p>
 </li>
 <li><p>The response should include <code>timezone</code>, <code>offset</code> and <code>current_time</code> fields</p>
 <ul>
@@ -449,8 +460,21 @@ class TimeApiTestCase(TestCase):
 </li>
 </ul>
 </li>
-<li><p>If the parameter is not provided, or the timezone doesn&#39;t exist, the response code should be 400 and an <code>error</code> key should be provided in the JSON</p>
+<li><p>If the timezone doesn&#39;t exist, the response code should be 400 and an <code>error</code> key should be provided in the JSON</p>
 </li>
+</ul>
+</div>
+<div><h2 id="challenge-2">Challenge #2</h2>
+<p>As a user I want to provide the name of a city and country and get the current time in that location</p>
+</div>
+<div><ul>
+<li>The application should keep a database of Cities with name, country and timezone</li>
+<li>The <code>/api/time/</code> endpoint should accept <code>city</code> and <code>country</code> parameters<ul>
+<li>The country should be a two character country code</li>
+</ul>
+</li>
+<li>If the city doesn&#39;t exist in the database a 404 should be returned</li>
+<li>The response should be JSON and include <code>current_time</code>, <code>city</code> and <code>country</code> fields</li>
 </ul>
 </div>
 </body>
