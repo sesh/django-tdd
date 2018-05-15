@@ -10,7 +10,7 @@ I work at _Thoughworks_ in Melbourne 🇦🇺
 
 ---
 
-I've come a long way! 😴
+I've travelled a long way! 😴
 
 ---
 
@@ -44,7 +44,7 @@ _- Martin Fowler_
 
 ---
 
-🔴 💚 🔁
+🔴💚🔁
 
 ---
 
@@ -112,7 +112,7 @@ def test_is_prime_negative(self):
 
 ---
 
-In Python tests live it files that start with "test"
+In Python tests live in files that start with "test"
 
 ---
 

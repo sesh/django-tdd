@@ -20,7 +20,7 @@
 </div>
 <div><p>I work at <em>Thoughworks</em> in Melbourne 🇦🇺</p>
 </div>
-<div><p>I&#39;ve come a long way! 😴</p>
+<div><p>I&#39;ve travelled a long way! 😴</p>
 </div>
 <div><p>Today</p>
 <ul>
@@ -43,7 +43,7 @@
 <li>Refactor to ensure clean code</li>
 </ol>
 </div>
-<div><p>🔴 💚 🔁</p>
+<div><p>🔴💚🔁</p>
 </div>
 <div><p>Rules, you say?</p>
 </div>
@@ -86,7 +86,7 @@
     self.assertFalse(is_prime(-1))
 </code></pre>
 </div>
-<div><p>In Python tests live it files that start with &quot;test&quot;</p>
+<div><p>In Python tests live in files that start with &quot;test&quot;</p>
 </div>
 <div><p>In Django, we normally create test classes based on <code>django.test.TestCase</code></p>
 </div>
