@@ -12,4 +12,6 @@ Follow the [Getting Started](workshop/0001_GettingStarted.md) instructions to cr
 
 ---
 
-The slides are available in the Slides directory and at https://sesh.github.io/django-tdd/slides/
+The slides are available in the Slides directory and online here:
+
+[https://sesh.github.io/django-tdd/slides/](https://sesh.github.io/django-tdd/slides/)
