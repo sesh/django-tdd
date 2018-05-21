@@ -132,7 +132,15 @@ Let's write an API
 
 ---
 
-![](img/spec-001.jpg)
+## Current Time API
+
+As a user I want to receive the current UTC time so I can ensure my clock is correct
+
+---
+
+- The `/api/time` endpoint should return a JSON response with a `current_time` key
+- If successful, the status code should be 200 OK
+- All times should be in ISO 8601 format
 
 ---
 
@@ -502,7 +510,7 @@ urlpatterns = [
 
 ---
 
-Move our view into it's own app
+Move our view into its own app
 
 ---
 
@@ -649,3 +657,7 @@ As a user I want to provide the name of a city and country and get the current t
     - The country should be a two character country code
 - If the city doesn't exist in the database a 404 should be returned
 - The response should be JSON and include `current_time`, `city` and `country` fields
+
+---
+
+Danke 🙏

@@ -96,7 +96,14 @@
 </div>
 <div><p>Let&#39;s write an API</p>
 </div>
-<div><p><img src="img/spec-001.jpg" alt=""></p>
+<div><h2 id="current-time-api">Current Time API</h2>
+<p>As a user I want to receive the current UTC time so I can ensure my clock is correct</p>
+</div>
+<div><ul>
+<li>The <code>/api/time</code> endpoint should return a JSON response with a <code>current_time</code> key</li>
+<li>If successful, the status code should be 200 OK</li>
+<li>All times should be in ISO 8601 format</li>
+</ul>
 </div>
 <div><h2 id="writing-a-test-before-you-write-any-code">Writing a test before you write any code</h2>
 <pre><code class="lang-python"># time_api/tests.py
@@ -358,7 +365,7 @@ urlpatterns = [
 </div>
 <div><p>🔁 ?</p>
 </div>
-<div><p>Move our view into it&#39;s own app</p>
+<div><p>Move our view into its own app</p>
 </div>
 <div><pre><code class="lang-bash">&gt; ./manage.py startapp times
 </code></pre>
@@ -476,6 +483,8 @@ class TimeApiTestCase(TestCase):
 <li>If the city doesn&#39;t exist in the database a 404 should be returned</li>
 <li>The response should be JSON and include <code>current_time</code>, <code>city</code> and <code>country</code> fields</li>
 </ul>
+</div>
+<div><p>Danke 🙏</p>
 </div>
 </body>
 <style>
