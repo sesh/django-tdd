@@ -24,20 +24,20 @@ The Django test Client handles a lot of the heavy lifting for us – we will use
 
 <div style="display: flex; flex-basis: 50%;">
 
-  ```python
-  # time_api/tests.py
-  from django.test import TestCase
+```python
+# time_api/tests.py
+from django.test import TestCase
 
-  class TimeApiTestCase(TestCase):
+class TimeApiTestCase(TestCase):
 
-      def test_time_url_is_status_okay(self):
-          response = self.client.get('/api/time/')
-          self.assertEqual(200, response.status_code)
-  ```
+    def test_time_url_is_status_okay(self):
+        response = self.client.get('/api/time/')
+        self.assertEqual(200, response.status_code)
+```
 
-  ```python
-  # time_api/urls.py
-  ```
+```python
+# time_api/urls.py
+```
 
 </div>
 
@@ -57,33 +57,33 @@ We'll add the path (#1), create the view (#2) and return a HttpResponse (#3) to 
 
 <div style="display: flex; flex-basis: 50%;">
 
-  ```python
-  # time_api/tests.py
-  from django.test import TestCase
+```python
+# time_api/tests.py
+from django.test import TestCase
 
-  class TimeApiTestCase(TestCase):
+class TimeApiTestCase(TestCase):
 
-      def test_time_url_is_status_okay(self):
-          response = self.client.get('/api/time/')
-          self.assertEqual(200, response.status_code)
-  ```
+    def test_time_url_is_status_okay(self):
+        response = self.client.get('/api/time/')
+        self.assertEqual(200, response.status_code)
+```
 
-  ```python
-  # time_api/urls.py
-  from django.contrib import admin
-  from django.urls import path
+```python
+# time_api/urls.py
+from django.contrib import admin
+from django.urls import path
 
-  from django.http import HttpResponse  # 3
+from django.http import HttpResponse  # 3
 
-  def time_api(request):  # 2
-      return HttpResponse()
+def time_api(request):  # 2
+    return HttpResponse()
 
-  urlpatterns = [
-      path('admin/', admin.site.urls),
-      path('api/time/', time_api),  # 1
-  ]
+urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('api/time/', time_api),  # 1
+]
 
-  ```
+```
 
 </div>
 
@@ -100,37 +100,37 @@ Thanks to this we can write a test that confirms the response's Content-Type is 
 
 <div style="display: flex; flex-basis: 50%;">
 
-  ```python
-  # time_api/tests.py
-  from django.test import TestCase
+```python
+# time_api/tests.py
+from django.test import TestCase
 
-  class TimeApiTestCase(TestCase):
+class TimeApiTestCase(TestCase):
 
-      def test_time_url_is_status_okay(self):
-          response = self.client.get('/api/time/')
-          self.assertEqual(200, response.status_code)
-
-      def test_time_api_should_return_json(self):
+    def test_time_url_is_status_okay(self):
         response = self.client.get('/api/time/')
-        self.assertEqual('application/json', response['Content-Type'])
-  ```
+        self.assertEqual(200, response.status_code)
 
-  ```python
-  # time_api/urls.py
-  from django.contrib import admin
-  from django.urls import path
+    def test_time_api_should_return_json(self):
+    response = self.client.get('/api/time/')
+    self.assertEqual('application/json', response['Content-Type'])
+```
 
-  from django.http import HttpResponse
+```python
+# time_api/urls.py
+from django.contrib import admin
+from django.urls import path
 
-  def time_api(request):
-      return HttpResponse()
+from django.http import HttpResponse
 
-  urlpatterns = [
-      path('admin/', admin.site.urls),
-      path('api/time/', time_api),
-  ]
+def time_api(request):
+    return HttpResponse()
 
-  ```
+urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('api/time/', time_api),
+]
+
+```
 
 </div>
 
@@ -142,36 +142,36 @@ Django's built-in `JsonResponse` will handle serialisation for us and make our l
 
 <div style="display: flex; flex-basis: 50%;">
 
-  ```python
-  # time_api/tests.py
-  from django.test import TestCase
+```python
+# time_api/tests.py
+from django.test import TestCase
 
-  class TimeApiTestCase(TestCase):
+class TimeApiTestCase(TestCase):
 
-      def test_time_url_is_status_okay(self):
-          response = self.client.get('/api/time/')
-          self.assertEqual(200, response.status_code)
-
-      def test_time_api_should_return_json(self):
+    def test_time_url_is_status_okay(self):
         response = self.client.get('/api/time/')
-        self.assertEqual('application/json', response['Content-Type'])
-  ```
+        self.assertEqual(200, response.status_code)
 
-  ```python
-  # time_api/urls.py
-  from django.contrib import admin
-  from django.urls import path
+    def test_time_api_should_return_json(self):
+    response = self.client.get('/api/time/')
+    self.assertEqual('application/json', response['Content-Type'])
+```
 
-  from django.http import HttpResponse, JsonResponse  # 2
+```python
+# time_api/urls.py
+from django.contrib import admin
+from django.urls import path
 
-  def time_api(request):
-      return JsonResponse({})  # 1
+from django.http import HttpResponse, JsonResponse  # 2
 
-  urlpatterns = [
-      path('admin/', admin.site.urls),
-      path('api/time/', time_api),
-  ]
-  ```
+def time_api(request):
+    return JsonResponse({})  # 1
+
+urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('api/time/', time_api),
+]
+```
 
 </div>
 
@@ -181,35 +181,35 @@ Yes! Let's remove that unused `HttpResponse` import and rearrange the imports to
 
 <div style="display: flex; flex-basis: 50%;">
 
-  ```python
-  # time_api/tests.py
-  from django.test import TestCase
+```python
+# time_api/tests.py
+from django.test import TestCase
 
-  class TimeApiTestCase(TestCase):
+class TimeApiTestCase(TestCase):
 
-      def test_time_url_is_status_okay(self):
-          response = self.client.get('/api/time/')
-          self.assertEqual(200, response.status_code)
+    def test_time_url_is_status_okay(self):
+        response = self.client.get('/api/time/')
+        self.assertEqual(200, response.status_code)
 
-      def test_time_api_should_return_json(self):
-          response = self.client.get('/api/time/')
-          self.assertEqual('application/json', response['Content-Type'])
-  ```
+    def test_time_api_should_return_json(self):
+        response = self.client.get('/api/time/')
+        self.assertEqual('application/json', response['Content-Type'])
+```
 
-  ```python
-  # time_api/urls.py
-  from django.contrib import admin
-  from django.http import JsonResponse
-  from django.urls import path
+```python
+# time_api/urls.py
+from django.contrib import admin
+from django.http import JsonResponse
+from django.urls import path
 
-  def time_api(request):
-      return JsonResponse({})
+def time_api(request):
+    return JsonResponse({})
 
-  urlpatterns = [
-      path('admin/', admin.site.urls),
-      path('api/time/', time_api),
-  ]
-  ```
+urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('api/time/', time_api),
+]
+```
 
 </div>
 
@@ -222,39 +222,39 @@ Once we have the response, we use the `.json()` function to convert it to a dict
 
 <div style="display: flex; flex-basis: 50%;">
 
-  ```python
-  # time_api/tests.py
-  from django.test import TestCase
+```python
+# time_api/tests.py
+from django.test import TestCase
 
-  class TimeApiTestCase(TestCase):
+class TimeApiTestCase(TestCase):
 
-      def test_time_url_is_status_okay(self):
-          response = self.client.get('/api/time/')
-          self.assertEqual(200, response.status_code)
+    def test_time_url_is_status_okay(self):
+        response = self.client.get('/api/time/')
+        self.assertEqual(200, response.status_code)
 
-      def test_time_api_should_return_json(self):
-          response = self.client.get('/api/time/')
-          self.assertEqual('application/json', response['Content-Type'])
+    def test_time_api_should_return_json(self):
+        response = self.client.get('/api/time/')
+        self.assertEqual('application/json', response['Content-Type'])
 
-      def test_time_api_should_include_current_time_key(self):
-          response = self.client.get('/api/time/')
-          self.assertTrue('current_time' in response.json())
-  ```
+    def test_time_api_should_include_current_time_key(self):
+        response = self.client.get('/api/time/')
+        self.assertTrue('current_time' in response.json())
+```
 
-  ```python
-  # time_api/urls.py
-  from django.contrib import admin
-  from django.http import JsonResponse
-  from django.urls import path
+```python
+# time_api/urls.py
+from django.contrib import admin
+from django.http import JsonResponse
+from django.urls import path
 
-  def time_api(request):
-      return JsonResponse({})
+def time_api(request):
+    return JsonResponse({})
 
-  urlpatterns = [
-      path('admin/', admin.site.urls),
-      path('api/time/', time_api),
-  ]
-  ```
+urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('api/time/', time_api),
+]
+```
 
 </div>
 
@@ -266,41 +266,41 @@ Let's update our view to return the expected key (#1). For now there's no reason
 
 <div style="display: flex; flex-basis: 50%;">
 
-  ```python
-  # time_api/tests.py
-  from django.test import TestCase
+```python
+# time_api/tests.py
+from django.test import TestCase
 
-  class TimeApiTestCase(TestCase):
+class TimeApiTestCase(TestCase):
 
-      def test_time_url_is_status_okay(self):
-          response = self.client.get('/api/time/')
-          self.assertEqual(200, response.status_code)
+    def test_time_url_is_status_okay(self):
+        response = self.client.get('/api/time/')
+        self.assertEqual(200, response.status_code)
 
-      def test_time_api_should_return_json(self):
-          response = self.client.get('/api/time/')
-          self.assertEqual('application/json', response['Content-Type'])
+    def test_time_api_should_return_json(self):
+        response = self.client.get('/api/time/')
+        self.assertEqual('application/json', response['Content-Type'])
 
-      def test_time_api_should_include_current_time_key(self):
-          response = self.client.get('/api/time/')
-          self.assertTrue('current_time' in response.json())
-  ```
+    def test_time_api_should_include_current_time_key(self):
+        response = self.client.get('/api/time/')
+        self.assertTrue('current_time' in response.json())
+```
 
-  ```python
-  # time_api/urls.py
-  from django.contrib import admin
-  from django.http import JsonResponse
-  from django.urls import path
+```python
+# time_api/urls.py
+from django.contrib import admin
+from django.http import JsonResponse
+from django.urls import path
 
-  def time_api(request):
-      return JsonResponse({
-          'current_time': ''  # 1
-      })
+def time_api(request):
+    return JsonResponse({
+        'current_time': ''  # 1
+    })
 
-  urlpatterns = [
-      path('admin/', admin.site.urls),
-      path('api/time/', time_api),
-  ]
-  ```
+urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('api/time/', time_api),
+]
+```
 
 </div>
 
@@ -313,47 +313,47 @@ Now it's time to return an actual date. We need to format it the ISO 8601 format
 
 <div style="display: flex; flex-basis: 50%;">
 
-  ```python
-  # time_api/tests.py
-  from django.test import TestCase
+```python
+# time_api/tests.py
+from django.test import TestCase
 
-  class TimeApiTestCase(TestCase):
+class TimeApiTestCase(TestCase):
 
-      def test_time_url_is_status_okay(self):
-          response = self.client.get('/api/time/')
-          self.assertEqual(200, response.status_code)
+    def test_time_url_is_status_okay(self):
+        response = self.client.get('/api/time/')
+        self.assertEqual(200, response.status_code)
 
-      def test_time_api_should_return_json(self):
-          response = self.client.get('/api/time/')
-          self.assertEqual('application/json', response['Content-Type'])
+    def test_time_api_should_return_json(self):
+        response = self.client.get('/api/time/')
+        self.assertEqual('application/json', response['Content-Type'])
 
-      def test_time_api_should_include_current_time_key(self):
-          response = self.client.get('/api/time/')
-          self.assertTrue('current_time' in response.json())
+    def test_time_api_should_include_current_time_key(self):
+        response = self.client.get('/api/time/')
+        self.assertTrue('current_time' in response.json())
 
-      def test_time_api_should_return_valid_iso8601_format(self):
-          response = self.client.get('/api/time/')
-          current_time = response.json()['current_time']
-          dt = datetime.strptime(current_time, '%Y-%m-%dT%H:%M:%SZ')
-          self.assertTrue(isinstance(dt, datetime))
-  ```
+    def test_time_api_should_return_valid_iso8601_format(self):
+        response = self.client.get('/api/time/')
+        current_time = response.json()['current_time']
+        dt = datetime.strptime(current_time, '%Y-%m-%dT%H:%M:%SZ')
+        self.assertTrue(isinstance(dt, datetime))
+```
 
-  ```python
-  # time_api/urls.py
-  from django.contrib import admin
-  from django.http import JsonResponse
-  from django.urls import path
+```python
+# time_api/urls.py
+from django.contrib import admin
+from django.http import JsonResponse
+from django.urls import path
 
-  def time_api(request):
-      return JsonResponse({
-          'current_time': ''
-      })
+def time_api(request):
+    return JsonResponse({
+        'current_time': ''
+    })
 
-  urlpatterns = [
-      path('admin/', admin.site.urls),
-      path('api/time/', time_api),
-  ]
-  ```
+urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('api/time/', time_api),
+]
+```
 
 </div>
 
@@ -364,47 +364,47 @@ Let's update the view return a valid date. In this case, the release date of In 
 
 <div style="display: flex; flex-basis: 50%;">
 
-  ```python
-  # time_api/tests.py
-  from django.test import TestCase
+```python
+# time_api/tests.py
+from django.test import TestCase
 
-  class TimeApiTestCase(TestCase):
+class TimeApiTestCase(TestCase):
 
-      def test_time_url_is_status_okay(self):
-          response = self.client.get('/api/time/')
-          self.assertEqual(200, response.status_code)
+    def test_time_url_is_status_okay(self):
+        response = self.client.get('/api/time/')
+        self.assertEqual(200, response.status_code)
 
-      def test_time_api_should_return_json(self):
-          response = self.client.get('/api/time/')
-          self.assertEqual('application/json', response['Content-Type'])
+    def test_time_api_should_return_json(self):
+        response = self.client.get('/api/time/')
+        self.assertEqual('application/json', response['Content-Type'])
 
-      def test_time_api_should_include_current_time_key(self):
-          response = self.client.get('/api/time/')
-          self.assertTrue('current_time' in response.json())
+    def test_time_api_should_include_current_time_key(self):
+        response = self.client.get('/api/time/')
+        self.assertTrue('current_time' in response.json())
 
-      def test_time_api_should_return_valid_iso8601_format(self):
-          response = self.client.get('/api/time/')
-          current_time = response.json()['current_time']
-          dt = datetime.strptime(current_time, '%Y-%m-%dT%H:%M:%SZ')
-          self.assertTrue(isinstance(dt, datetime))
-  ```
+    def test_time_api_should_return_valid_iso8601_format(self):
+        response = self.client.get('/api/time/')
+        current_time = response.json()['current_time']
+        dt = datetime.strptime(current_time, '%Y-%m-%dT%H:%M:%SZ')
+        self.assertTrue(isinstance(dt, datetime))
+```
 
-  ```python
-  # time_api/urls.py
-  from django.contrib import admin
-  from django.http import JsonResponse
-  from django.urls import path
+```python
+# time_api/urls.py
+from django.contrib import admin
+from django.http import JsonResponse
+from django.urls import path
 
-  def time_api(request):
-      return JsonResponse({
-          'current_time': '2007-10-10T08:00:00Z'
-      })
+def time_api(request):
+    return JsonResponse({
+        'current_time': '2007-10-10T08:00:00Z'
+    })
 
-  urlpatterns = [
-      path('admin/', admin.site.urls),
-      path('api/time/', time_api),
-  ]
-  ```
+urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('api/time/', time_api),
+]
+```
 
 </div>
 
@@ -430,58 +430,58 @@ Let's add a test that using this pattern and forces us to generalise our solutio
 
 <div style="display: flex; flex-basis: 50%;">
 
-  ```python
-  # time_api/tests.py
-  from django.test import TestCase
+```python
+# time_api/tests.py
+from django.test import TestCase
 
-  class TimeApiTestCase(TestCase):
+class TimeApiTestCase(TestCase):
 
-      def test_time_url_is_status_okay(self):
-          response = self.client.get('/api/time/')
-          self.assertEqual(200, response.status_code)
+    def test_time_url_is_status_okay(self):
+        response = self.client.get('/api/time/')
+        self.assertEqual(200, response.status_code)
 
-      def test_time_api_should_return_json(self):
-          response = self.client.get('/api/time/')
-          self.assertEqual('application/json', response['Content-Type'])
+    def test_time_api_should_return_json(self):
+        response = self.client.get('/api/time/')
+        self.assertEqual('application/json', response['Content-Type'])
 
-      def test_time_api_should_include_current_time_key(self):
-          response = self.client.get('/api/time/')
-          self.assertTrue('current_time' in response.json())
+    def test_time_api_should_include_current_time_key(self):
+        response = self.client.get('/api/time/')
+        self.assertTrue('current_time' in response.json())
 
-      def test_time_api_should_return_valid_iso8601_format(self):
-          response = self.client.get('/api/time/')
-          current_time = response.json()['current_time']
-          dt = datetime.strptime(current_time, '%Y-%m-%dT%H:%M:%SZ')
-          self.assertTrue(isinstance(dt, datetime))
+    def test_time_api_should_return_valid_iso8601_format(self):
+        response = self.client.get('/api/time/')
+        current_time = response.json()['current_time']
+        dt = datetime.strptime(current_time, '%Y-%m-%dT%H:%M:%SZ')
+        self.assertTrue(isinstance(dt, datetime))
 
-      def test_time_api_should_return_current_utc_time(self):
-          with patch('django.utils.timezone.now') as mock_tz_now:
-              expected_datetime = datetime(2018, 1, 1, 10, 10)
-              mock_tz_now.return_value = expected_datetime
+    def test_time_api_should_return_current_utc_time(self):
+        with patch('django.utils.timezone.now') as mock_tz_now:
+            expected_datetime = datetime(2018, 1, 1, 10, 10)
+            mock_tz_now.return_value = expected_datetime
 
-              response = self.client.get('/api/time/')
-              current_time = response.json()['current_time']
-              parsed_time = datetime.strptime(current_time, '%Y-%m-%dT%H:%M:%SZ')
+            response = self.client.get('/api/time/')
+            current_time = response.json()['current_time']
+            parsed_time = datetime.strptime(current_time, '%Y-%m-%dT%H:%M:%SZ')
 
-              self.assertEqual(parsed_time, expected_datetime)
-  ```
+            self.assertEqual(parsed_time, expected_datetime)
+```
 
-  ```python
-  # time_api/urls.py
-  from django.contrib import admin
-  from django.http import JsonResponse
-  from django.urls import path
+```python
+# time_api/urls.py
+from django.contrib import admin
+from django.http import JsonResponse
+from django.urls import path
 
-  def time_api(request):
-      return JsonResponse({
-          'current_time': '2007-10-10T08:00:00Z'
-      })
+def time_api(request):
+    return JsonResponse({
+        'current_time': '2007-10-10T08:00:00Z'
+    })
 
-  urlpatterns = [
-      path('admin/', admin.site.urls),
-      path('api/time/', time_api),
-  ]
-  ```
+urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('api/time/', time_api),
+]
+```
 
 </div>
 
@@ -492,59 +492,59 @@ Now we can using `timezone.now()` (#1) to return the current time and `strftime(
 
 <div style="display: flex; flex-basis: 50%;">
 
-  ```python
-  # time_api/tests.py
-  from django.test import TestCase
+```python
+# time_api/tests.py
+from django.test import TestCase
 
-  class TimeApiTestCase(TestCase):
+class TimeApiTestCase(TestCase):
 
-      def test_time_url_is_status_okay(self):
-          response = self.client.get('/api/time/')
-          self.assertEqual(200, response.status_code)
+    def test_time_url_is_status_okay(self):
+        response = self.client.get('/api/time/')
+        self.assertEqual(200, response.status_code)
 
-      def test_time_api_should_return_json(self):
-          response = self.client.get('/api/time/')
-          self.assertEqual('application/json', response['Content-Type'])
+    def test_time_api_should_return_json(self):
+        response = self.client.get('/api/time/')
+        self.assertEqual('application/json', response['Content-Type'])
 
-      def test_time_api_should_include_current_time_key(self):
-          response = self.client.get('/api/time/')
-          self.assertTrue('current_time' in response.json())
+    def test_time_api_should_include_current_time_key(self):
+        response = self.client.get('/api/time/')
+        self.assertTrue('current_time' in response.json())
 
-      def test_time_api_should_return_valid_iso8601_format(self):
-          response = self.client.get('/api/time/')
-          current_time = response.json()['current_time']
-          dt = datetime.strptime(current_time, '%Y-%m-%dT%H:%M:%SZ')
-          self.assertTrue(isinstance(dt, datetime))
+    def test_time_api_should_return_valid_iso8601_format(self):
+        response = self.client.get('/api/time/')
+        current_time = response.json()['current_time']
+        dt = datetime.strptime(current_time, '%Y-%m-%dT%H:%M:%SZ')
+        self.assertTrue(isinstance(dt, datetime))
 
-      def test_time_api_should_return_current_utc_time(self):
-          with patch('django.utils.timezone.now') as mock_tz_now:
-              expected_datetime = datetime(2018, 1, 1, 10, 10)
-              mock_tz_now.return_value = expected_datetime
+    def test_time_api_should_return_current_utc_time(self):
+        with patch('django.utils.timezone.now') as mock_tz_now:
+            expected_datetime = datetime(2018, 1, 1, 10, 10)
+            mock_tz_now.return_value = expected_datetime
 
-              response = self.client.get('/api/time/')
-              current_time = response.json()['current_time']
-              parsed_time = datetime.strptime(current_time, '%Y-%m-%dT%H:%M:%SZ')
+            response = self.client.get('/api/time/')
+            current_time = response.json()['current_time']
+            parsed_time = datetime.strptime(current_time, '%Y-%m-%dT%H:%M:%SZ')
 
-              self.assertEqual(parsed_time, expected_datetime)
-  ```
+            self.assertEqual(parsed_time, expected_datetime)
+```
 
-  ```python
-  # time_api/urls.py
-  from django.contrib import admin
-  from django.http import JsonResponse
-  from django.urls import path
-  from django.utils import timezone
+```python
+# time_api/urls.py
+from django.contrib import admin
+from django.http import JsonResponse
+from django.urls import path
+from django.utils import timezone
 
-  def time_api(request):
-      return JsonResponse({
-          'current_time': timezone.now().strftime('%Y-%m-%dT%H:%M:%SZ')  # 2
-      })
+def time_api(request):
+    return JsonResponse({
+        'current_time': timezone.now().strftime('%Y-%m-%dT%H:%M:%SZ')  # 2
+    })
 
-  urlpatterns = [
-      path('admin/', admin.site.urls),
-      path('api/time/', time_api),
-  ]
-  ```
+urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('api/time/', time_api),
+]
+```
 
 </div>
 
@@ -557,30 +557,30 @@ Firstly, we can move the magic time formatting string into our settings (#1) and
 
 <div style="display: flex; flex-basis: 50%;">
 
-  ```python
-  # time_api/settings.py
+```python
+# time_api/settings.py
 
-  DATETIME_FORMAT = '%Y-%m-%dT%H:%M:%SZ'  # 1
-  ```
+DATETIME_FORMAT = '%Y-%m-%dT%H:%M:%SZ'  # 1
+```
 
-  ```python
-  # time_api/urls.py
-  from django.conf import settings
-  from django.contrib import admin
-  from django.http import JsonResponse
-  from django.urls import path
-  from django.utils import timezone
+```python
+# time_api/urls.py
+from django.conf import settings
+from django.contrib import admin
+from django.http import JsonResponse
+from django.urls import path
+from django.utils import timezone
 
-  def time_api(request):
-      return JsonResponse({
-          'current_time': timezone.now().strftime(settings.DATETIME_FORMAT)  # 2
-      })
+def time_api(request):
+    return JsonResponse({
+        'current_time': timezone.now().strftime(settings.DATETIME_FORMAT)  # 2
+    })
 
-  urlpatterns = [
-      path('admin/', admin.site.urls),
-      path('api/time/', time_api),
-  ]
-  ```
+urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('api/time/', time_api),
+]
+```
 
 </div>
 
@@ -599,31 +599,31 @@ Then we migrate our view code into `times/views.py` and update `time_api/urls.py
 
 <div style="display: flex; flex-basis: 50%;">
 
-  ```python
-  # times/views.py
-  from django.conf import settings
-  from django.http import JsonResponse
-  from django.utils import timezone
+```python
+# times/views.py
+from django.conf import settings
+from django.http import JsonResponse
+from django.utils import timezone
 
 
-  def time_api(request):
-      return JsonResponse({
-          'current_time': timezone.now().strftime(settings.DATETIME_FORMAT)
-      })
-  ```
+def time_api(request):
+    return JsonResponse({
+        'current_time': timezone.now().strftime(settings.DATETIME_FORMAT)
+    })
+```
 
-  ```python
-  # time_api/urls.py
-  from django.contrib import admin
-  from django.urls import path
+```python
+# time_api/urls.py
+from django.contrib import admin
+from django.urls import path
 
-  from times.views import time_api
+from times.views import time_api
 
-  urlpatterns = [
-      path('admin/', admin.site.urls),
-      path('api/time/', time_api),
-  ]
-  ```
+urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('api/time/', time_api),
+]
+```
 
 </div>
 
