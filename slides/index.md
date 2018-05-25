@@ -34,7 +34,7 @@ Format
 
 ## These slides are available online
 
-https://github.com/sesh/django-tdd
+https://sesh.github.io/django-tdd/
 
 ---
 
@@ -55,6 +55,10 @@ _- Martin Fowler_
 ---
 
 🔴💚🔁
+
+---
+
+Refactor both your code and tests
 
 ---
 
@@ -618,6 +622,14 @@ class TimeApiTestCase(TestCase):
 
 ---
 
+We've just written 5 tests for our API
+
+---
+
+Django makes this type of test easy & fast
+
+---
+
 Okay, now it's your turn 🏃🏻
 
 ---
@@ -630,6 +642,10 @@ Don't write any code until you have a failing test
 
 ---
 
+Pair up. Ping-pong + TDD works great.
+
+---
+
 🔴💚🔁
 
 ---
@@ -639,6 +655,36 @@ Don't write any code until you have a failing test
 - The `/api/time` endpoint should return a JSON response with a `current_time` key
 - If successful, the status code should be 200 OK
 - All times should be in ISO 8601 format
+
+---
+
+How do we know we're covering all of our code?
+
+---
+
+Delete a line, make sure a test fails
+
+---
+
+Check coverage with coverage.py
+
+---
+
+```bash
+> pip install coverage
+```
+
+---
+
+```bash
+> coverage run --source . manage.py test
+```
+
+---
+
+```bash
+> coverage report
+```
 
 ---
 
@@ -770,8 +816,17 @@ Think about edge cases
 
 ---
 
+TDD is a discipline and takes practice
+
+---
+
 Try using TDD on your next side project
 
 ---
 
 Danke 🙏
+
+---
+
+- Me: https://brntn.me / @sesh
+- Content: https://github.com/sesh/django-tdd

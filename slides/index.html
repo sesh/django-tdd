@@ -41,7 +41,7 @@
 </ul>
 </div>
 <div><h2 id="these-slides-are-available-online">These slides are available online</h2>
-<p><a href="https://github.com/sesh/django-tdd">https://github.com/sesh/django-tdd</a></p>
+<p><a href="https://sesh.github.io/django-tdd/">https://sesh.github.io/django-tdd/</a></p>
 </div>
 <div><p>So, what is TDD?</p>
 </div>
@@ -55,6 +55,8 @@
 </ol>
 </div>
 <div><p>🔴💚🔁</p>
+</div>
+<div><p>Refactor both your code and tests</p>
 </div>
 <div><p>Rules, you say?</p>
 </div>
@@ -452,11 +454,17 @@ class TimeApiTestCase(TestCase):
 </div>
 <div><p>💚</p>
 </div>
+<div><p>We&#39;ve just written 5 tests for our API</p>
+</div>
+<div><p>Django makes this type of test easy &amp; fast</p>
+</div>
 <div><p>Okay, now it&#39;s your turn 🏃🏻</p>
 </div>
 <div><p>Think about how you would break down the task into testable units</p>
 </div>
 <div><p>Don&#39;t write any code until you have a failing test</p>
+</div>
+<div><p>Pair up. Ping-pong + TDD works great.</p>
 </div>
 <div><p>🔴💚🔁</p>
 </div>
@@ -466,6 +474,21 @@ class TimeApiTestCase(TestCase):
 <li>If successful, the status code should be 200 OK</li>
 <li>All times should be in ISO 8601 format</li>
 </ul>
+</div>
+<div><p>How do we know we&#39;re covering all of our code?</p>
+</div>
+<div><p>Delete a line, make sure a test fails</p>
+</div>
+<div><p>Check coverage with coverage.py</p>
+</div>
+<div><pre><code class="lang-bash">&gt; pip install coverage
+</code></pre>
+</div>
+<div><pre><code class="lang-bash">&gt; coverage run --source . manage.py test
+</code></pre>
+</div>
+<div><pre><code class="lang-bash">&gt; coverage report
+</code></pre>
 </div>
 <div><p>You can grab the code up until this point at:</p>
 <p><a href="https://github.com/sesh/time-tdd">https://github.com/sesh/time-tdd</a></p>
@@ -564,9 +587,16 @@ class TimeApiTestCase(TestCase):
 </div>
 <div><p>Think about edge cases</p>
 </div>
+<div><p>TDD is a discipline and takes practice</p>
+</div>
 <div><p>Try using TDD on your next side project</p>
 </div>
 <div><p>Danke 🙏</p>
+</div>
+<div><ul>
+<li>Me: <a href="https://brntn.me">https://brntn.me</a> / @sesh</li>
+<li>Content: <a href="https://github.com/sesh/django-tdd">https://github.com/sesh/django-tdd</a></li>
+</ul>
 </div>
 </body>
 <style>
