@@ -1,4 +1,4 @@
-Test Driven Development with Django
+# Test Driven Development with Django
 
 ---
 
@@ -18,7 +18,17 @@ Today
 
 - I'll introduce TDD and some of its guidelines
 - We will run through an example together
-- You will build on our example using TDD
+- You will implement the same example yourself
+- Our challenges will extend the solution
+
+---
+
+Format
+
+- I'll talk for 30 minutes
+- for i in range(3):
+  - You'll get 10-15 minutes to practice your TDD foo
+  - We'll have a quick discussion
 
 ---
 
@@ -32,7 +42,7 @@ So, what is TDD?
 
 ---
 
-## Test-Driven Development (TDD) is a technique for building software that guides software development by writing tests.
+## Test-Driven Development (TDD) is a technique for building software that guides software development by writing tests
 
 _- Martin Fowler_
 
@@ -124,7 +134,7 @@ There are _other unittest.TestCase subclasses_ that let you do different things
 
 ---
 
-They all provide the _Django test Client_ which we will use to make API calls
+They all provide the _Django Test Client_ which we will use to make API calls
 
 ---
 
@@ -410,13 +420,13 @@ Mocking is _pretty easy_ in Python
 
 ```python
 with patch('django.utils.timezone.now') as mock_tz_now:
-    expected_datetime = datetime(2018, 1, 1, 10, 10)
+    expected_datetime = datetime(2018, 1, 1, 10, 10, tzinfo=timezone.utc)
     mock_tz_now.return_value = expected_datetime
 ```
 
 ---
 
-Generalising by testing that we're returning the current time
+Generalising by testing that we're returning the "current" time
 
 ---
 
@@ -430,7 +440,7 @@ from django.test import TestCase
 class TimeApiTestCase(TestCase):
     def test_time_api_should_return_current_utc_time(self):
         with patch('django.utils.timezone.now') as mock_tz_now:
-            expected_datetime = datetime(2018, 1, 1, 10, 10)
+            expected_datetime = datetime(2018, 1, 1, 10, 10, tzinfo=timezone.utc)
             mock_tz_now.return_value = expected_datetime
 
             response = self.client.get('/api/time/')
@@ -592,7 +602,7 @@ class TimeApiTestCase(TestCase):
 
     def test_time_api_should_return_current_utc_time(self):
         with patch('django.utils.timezone.now') as mock_tz_now:
-            expected_datetime = datetime(2018, 1, 1, 10, 10)
+            expected_datetime = datetime(2018, 1, 1, 10, 10, tzinfo=timezone.utc)
             mock_tz_now.return_value = expected_datetime
 
             response = self.client.get('/api/time/')
@@ -608,17 +618,27 @@ class TimeApiTestCase(TestCase):
 
 ---
 
-Time for a quick break!
-
-☕️️️️ ️☕️️️️ ️☕️️️️
+Okay, now it's your turn 🏃🏻
 
 ---
 
-Welcome back 👋
+Think about how you would break down the task into testable units
 
 ---
 
-Now it's your turn
+Don't write any code until you have a failing test
+
+---
+
+🔴💚🔁
+
+---
+
+## As a user I want to receive the current UTC time so I can ensure my clock is correct
+
+- The `/api/time` endpoint should return a JSON response with a `current_time` key
+- If successful, the status code should be 200 OK
+- All times should be in ISO 8601 format
 
 ---
 
@@ -628,25 +648,82 @@ https://github.com/sesh/time-tdd
 
 ---
 
-## Challenge #1
+Ready for another challenge? 🏄
 
-As a user I want to receive the current time in the timezone that I provide so I can see what time it is
+---
+
+As a user I want to receive the current time _in the timezone that I provide_ so I can see what time it is
 
 ---
 
 - The `/api/time/` endpoint should accept a `timezone` query parameter that provides a timezone in the IANA "Australia/Melbourne" format
-
 - The response should include `timezone`, `offset` and `current_time` fields
-    - The `timezone` field should include the name of the timezone
-    - The `offset` field should include the current offset for the timezone in `±hhmm` format
-    - The `current_time` field should include the current time in the specified timezone
-        - The time should be returned in a [ISO 8601](iso8601) compatible format: 2018-04-29T02:33:24±hhmm
-
+  - The `timezone` field should include the name of the timezone
+  - The `offset` field should include the current offset for the timezone in `±hhmm` format
+  - The `current_time` field should include the current time in the specified timezone
+    - The time should be returned in a [ISO 8601](iso8601) compatible format: 2018-04-29T02:33:24±hhmm
 - If the timezone doesn't exist, the response code should be 400 and an `error` key should be provided in the JSON
 
 ---
 
-## Challenge #2
+How did you approach the challenge?
+
+---
+
+Here's some of the tests I wrote:
+
+- test_timezone_response_contains_timezone
+- test_should_return_404_for_missing_timezone
+- test_timezone_response_contains_offset
+- test_timezone_response_includes_correct_time
+- test_timezone_error_message
+
+---
+
+Okay, last challenge 👊
+
+---
+
+But first, TDD + Django Models
+
+---
+
+```python
+def test_can_create_person(self):
+    person = Person.objects.create(
+        name="Brenton Cleeland",
+        country="AU",
+        twitter="@sesh",
+    )
+```
+
+---
+
+```python
+def test_can_create_person(self):
+    try:
+        person = Person.objects.create(
+            name="Brenton Cleeland",
+            country="AU",
+            twitter="@sesh",
+        )
+    except:
+        self.fail('Creating model caused an exception')
+```
+
+---
+
+🔴
+
+---
+
+You will need to create the model and the migration
+
+---
+
+To the feature 👷
+
+---
 
 As a user I want to provide the name of a city and country and get the current time in that location
 
@@ -654,9 +731,46 @@ As a user I want to provide the name of a city and country and get the current t
 
 - The application should keep a database of Cities with name, country and timezone
 - The `/api/time/` endpoint should accept `city` and `country` parameters
-    - The country should be a two character country code
+  - The country should be a two character country code
 - If the city doesn't exist in the database a 404 should be returned
 - The response should be JSON and include `current_time`, `city` and `country` fields
+
+---
+
+Here's some tests that I wrote:
+
+- test_can_create_city
+- test_city_response_contains_city
+- test_city_response_contains_country
+- test_city_response_contains_correct_time_key
+- test_city_response_contains_correct_time
+- test_city_api_returns_404_if_not_found
+
+---
+
+Awesome-sauce 🍅
+
+---
+
+Let's recap
+
+---
+
+- Write a test
+- Write code
+- Refactor to make things 👍
+
+---
+
+Only write the code required to make your test pass
+
+---
+
+Think about edge cases
+
+---
+
+Try using TDD on your next side project
 
 ---
 

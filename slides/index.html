@@ -14,7 +14,7 @@
   <script>hljs.initHighlightingOnLoad();</script>
 </head>
 <body class='light'>
-  <div><p>Test Driven Development with Django</p>
+  <div><h1 id="test-driven-development-with-django">Test Driven Development with Django</h1>
 </div>
 <div><p>My name is <em>Brenton Cleeland</em></p>
 </div>
@@ -26,7 +26,18 @@
 <ul>
 <li>I&#39;ll introduce TDD and some of its guidelines</li>
 <li>We will run through an example together</li>
-<li>You will build on our example using TDD</li>
+<li>You will implement the same example yourself</li>
+<li>Our challenges will extend the solution</li>
+</ul>
+</div>
+<div><p>Format</p>
+<ul>
+<li>I&#39;ll talk for 30 minutes</li>
+<li>for i in range(3):<ul>
+<li>You&#39;ll get 10-15 minutes to practice your TDD foo</li>
+<li>We&#39;ll have a quick discussion</li>
+</ul>
+</li>
 </ul>
 </div>
 <div><h2 id="these-slides-are-available-online">These slides are available online</h2>
@@ -34,7 +45,7 @@
 </div>
 <div><p>So, what is TDD?</p>
 </div>
-<div><h2 id="test-driven-development-tdd-is-a-technique-for-building-software-that-guides-software-development-by-writing-tests-">Test-Driven Development (TDD) is a technique for building software that guides software development by writing tests.</h2>
+<div><h2 id="test-driven-development-tdd-is-a-technique-for-building-software-that-guides-software-development-by-writing-tests">Test-Driven Development (TDD) is a technique for building software that guides software development by writing tests</h2>
 <p><em>- Martin Fowler</em></p>
 </div>
 <div><ol>
@@ -92,7 +103,7 @@
 </div>
 <div><p>There are <em>other unittest.TestCase subclasses</em> that let you do different things</p>
 </div>
-<div><p>They all provide the <em>Django test Client</em> which we will use to make API calls</p>
+<div><p>They all provide the <em>Django Test Client</em> which we will use to make API calls</p>
 </div>
 <div><p>Let&#39;s write an API</p>
 </div>
@@ -291,11 +302,11 @@ urlpatterns = [
 <div><p>Mocking is <em>pretty easy</em> in Python</p>
 </div>
 <div><pre><code class="lang-python">with patch(&#39;django.utils.timezone.now&#39;) as mock_tz_now:
-    expected_datetime = datetime(2018, 1, 1, 10, 10)
+    expected_datetime = datetime(2018, 1, 1, 10, 10, tzinfo=timezone.utc)
     mock_tz_now.return_value = expected_datetime
 </code></pre>
 </div>
-<div><p>Generalising by testing that we&#39;re returning the current time</p>
+<div><p>Generalising by testing that we&#39;re returning the &quot;current&quot; time</p>
 </div>
 <div><pre><code class="lang-python"># time_api/tests.py
 from datetime import datetime
@@ -306,7 +317,7 @@ from django.test import TestCase
 class TimeApiTestCase(TestCase):
     def test_time_api_should_return_current_utc_time(self):
         with patch(&#39;django.utils.timezone.now&#39;) as mock_tz_now:
-            expected_datetime = datetime(2018, 1, 1, 10, 10)
+            expected_datetime = datetime(2018, 1, 1, 10, 10, tzinfo=timezone.utc)
             mock_tz_now.return_value = expected_datetime
 
             response = self.client.get(&#39;/api/time/&#39;)
@@ -429,7 +440,7 @@ class TimeApiTestCase(TestCase):
 
     def test_time_api_should_return_current_utc_time(self):
         with patch(&#39;django.utils.timezone.now&#39;) as mock_tz_now:
-            expected_datetime = datetime(2018, 1, 1, 10, 10)
+            expected_datetime = datetime(2018, 1, 1, 10, 10, tzinfo=timezone.utc)
             mock_tz_now.return_value = expected_datetime
 
             response = self.client.get(&#39;/api/time/&#39;)
@@ -441,24 +452,31 @@ class TimeApiTestCase(TestCase):
 </div>
 <div><p>💚</p>
 </div>
-<div><p>Time for a quick break!</p>
-<p>☕️️️️ ️☕️️️️ ️☕️️️️</p>
+<div><p>Okay, now it&#39;s your turn 🏃🏻</p>
 </div>
-<div><p>Welcome back 👋</p>
+<div><p>Think about how you would break down the task into testable units</p>
 </div>
-<div><p>Now it&#39;s your turn</p>
+<div><p>Don&#39;t write any code until you have a failing test</p>
+</div>
+<div><p>🔴💚🔁</p>
+</div>
+<div><h2 id="as-a-user-i-want-to-receive-the-current-utc-time-so-i-can-ensure-my-clock-is-correct">As a user I want to receive the current UTC time so I can ensure my clock is correct</h2>
+<ul>
+<li>The <code>/api/time</code> endpoint should return a JSON response with a <code>current_time</code> key</li>
+<li>If successful, the status code should be 200 OK</li>
+<li>All times should be in ISO 8601 format</li>
+</ul>
 </div>
 <div><p>You can grab the code up until this point at:</p>
 <p><a href="https://github.com/sesh/time-tdd">https://github.com/sesh/time-tdd</a></p>
 </div>
-<div><h2 id="challenge-1">Challenge #1</h2>
-<p>As a user I want to receive the current time in the timezone that I provide so I can see what time it is</p>
+<div><p>Ready for another challenge? 🏄</p>
+</div>
+<div><p>As a user I want to receive the current time <em>in the timezone that I provide</em> so I can see what time it is</p>
 </div>
 <div><ul>
-<li><p>The <code>/api/time/</code> endpoint should accept a <code>timezone</code> query parameter that provides a timezone in the IANA &quot;Australia/Melbourne&quot; format</p>
-</li>
-<li><p>The response should include <code>timezone</code>, <code>offset</code> and <code>current_time</code> fields</p>
-<ul>
+<li>The <code>/api/time/</code> endpoint should accept a <code>timezone</code> query parameter that provides a timezone in the IANA &quot;Australia/Melbourne&quot; format</li>
+<li>The response should include <code>timezone</code>, <code>offset</code> and <code>current_time</code> fields<ul>
 <li>The <code>timezone</code> field should include the name of the timezone</li>
 <li>The <code>offset</code> field should include the current offset for the timezone in <code>±hhmm</code> format</li>
 <li>The <code>current_time</code> field should include the current time in the specified timezone<ul>
@@ -467,12 +485,50 @@ class TimeApiTestCase(TestCase):
 </li>
 </ul>
 </li>
-<li><p>If the timezone doesn&#39;t exist, the response code should be 400 and an <code>error</code> key should be provided in the JSON</p>
-</li>
+<li>If the timezone doesn&#39;t exist, the response code should be 400 and an <code>error</code> key should be provided in the JSON</li>
 </ul>
 </div>
-<div><h2 id="challenge-2">Challenge #2</h2>
-<p>As a user I want to provide the name of a city and country and get the current time in that location</p>
+<div><p>How did you approach the challenge?</p>
+</div>
+<div><p>Here&#39;s some of the tests I wrote:</p>
+<ul>
+<li>test_timezone_response_contains_timezone</li>
+<li>test_should_return_404_for_missing_timezone</li>
+<li>test_timezone_response_contains_offset</li>
+<li>test_timezone_response_includes_correct_time</li>
+<li>test_timezone_error_message</li>
+</ul>
+</div>
+<div><p>Okay, last challenge 👊</p>
+</div>
+<div><p>But first, TDD + Django Models</p>
+</div>
+<div><pre><code class="lang-python">def test_can_create_person(self):
+    person = Person.objects.create(
+        name=&quot;Brenton Cleeland&quot;,
+        country=&quot;AU&quot;,
+        twitter=&quot;@sesh&quot;,
+    )
+</code></pre>
+</div>
+<div><pre><code class="lang-python">def test_can_create_person(self):
+    try:
+        person = Person.objects.create(
+            name=&quot;Brenton Cleeland&quot;,
+            country=&quot;AU&quot;,
+            twitter=&quot;@sesh&quot;,
+        )
+    except:
+        self.fail(&#39;Creating model caused an exception&#39;)
+</code></pre>
+</div>
+<div><p>🔴</p>
+</div>
+<div><p>You will need to create the model and the migration</p>
+</div>
+<div><p>To the feature 👷</p>
+</div>
+<div><p>As a user I want to provide the name of a city and country and get the current time in that location</p>
 </div>
 <div><ul>
 <li>The application should keep a database of Cities with name, country and timezone</li>
@@ -483,6 +539,32 @@ class TimeApiTestCase(TestCase):
 <li>If the city doesn&#39;t exist in the database a 404 should be returned</li>
 <li>The response should be JSON and include <code>current_time</code>, <code>city</code> and <code>country</code> fields</li>
 </ul>
+</div>
+<div><p>Here&#39;s some tests that I wrote:</p>
+<ul>
+<li>test_can_create_city</li>
+<li>test_city_response_contains_city</li>
+<li>test_city_response_contains_country</li>
+<li>test_city_response_contains_correct_time_key</li>
+<li>test_city_response_contains_correct_time</li>
+<li>test_city_api_returns_404_if_not_found</li>
+</ul>
+</div>
+<div><p>Awesome-sauce 🍅</p>
+</div>
+<div><p>Let&#39;s recap</p>
+</div>
+<div><ul>
+<li>Write a test</li>
+<li>Write code</li>
+<li>Refactor to make things 👍</li>
+</ul>
+</div>
+<div><p>Only write the code required to make your test pass</p>
+</div>
+<div><p>Think about edge cases</p>
+</div>
+<div><p>Try using TDD on your next side project</p>
 </div>
 <div><p>Danke 🙏</p>
 </div>

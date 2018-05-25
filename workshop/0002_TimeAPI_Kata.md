@@ -2,8 +2,6 @@
 
 Follow along as we complete our first user story using TDD.
 
-You should have [created a Django project called time_api](0001_GettingStarted.md) before continuing.
-
 ---
 
 ## As a user I want to receive the current UTC time so I can ensure my clock is correct
@@ -137,7 +135,7 @@ urlpatterns = [
 When we run the tests we see that `text/html` doesn't equal `application/json`.
 Of course it doesn't!
 
-By far the simplest way to make this test pass is to replace our `HttpResponse` with `JsonResponse` (#1, #2).
+The simplest way to make this test pass is to replace our `HttpResponse` with `JsonResponse` (#1, #2).
 Django's built-in `JsonResponse` will handle serialisation for us and make our life far simpler going forward.
 
 <div style="display: flex; flex-basis: 50%;">
@@ -177,7 +175,8 @@ urlpatterns = [
 
 Should we refactor?
 
-Yes! Let's remove that unused `HttpResponse` import and rearrange the imports to make the always pedantic isort happy.
+Yes!
+Let's remove that unused `HttpResponse` import and rearrange the imports to make the always pedantic isort happy.
 
 <div style="display: flex; flex-basis: 50%;">
 
@@ -215,7 +214,7 @@ urlpatterns = [
 
 Great. We have two passing tests and we've just done our first refactor to make the code more readable.
 
-Let's continue with the next part of this feature: returing the `current_time` key in the response.
+Let's continue with the next part of this feature: returning the `current_time` key in the response.
 
 The test case is again very simple (notice a trend?).
 Once we have the response, we use the `.json()` function to convert it to a dictionary, and the `in` operator to check for our expected key.
@@ -263,7 +262,6 @@ The key "current_time" shouldn't exist in our JSON response.
 
 Let's update our view to return the expected key (#1). For now there's no reason (test!) to return anything other than an empty string.
 
-
 <div style="display: flex; flex-basis: 50%;">
 
 ```python
@@ -307,9 +305,12 @@ urlpatterns = [
 We run the tests and make sure that they're passing.
 They should be! We're returning the response exactly as we want it.
 
-Again think about refactoring this code. For now I think we're okay... But if there's anything you're interested in changing, go ahead.
+Again think about refactoring this code.
+For now I think we're okay...
+But it's your turn next so think about if there's anything you're interested in changing.
 
-Now it's time to return an actual date. We need to format it the ISO 8601 format, and we can test that by parsing it in our test and confirming we receive a datetime object.
+Now it's time to return an actual date.
+We need to format it the ISO 8601 format, and we can test that by parsing it in our test and confirming we receive a datetime object.
 
 <div style="display: flex; flex-basis: 50%;">
 
@@ -356,6 +357,9 @@ urlpatterns = [
 ```
 
 </div>
+
+When we run those tests we notice something interesting.
+The test_time_api_should_return_valid_iso8601_format isn't _failing_ but rather _erroring_.
 
 Think about the simplest code the we can write to make this pass for a moment.
 Do we need to return the _current time_ for this test to pass? No, we don't.
@@ -420,13 +424,13 @@ What we're about to do is called "patching the response" and works a like this:
 
 ```python
 with patch('django.utils.timezone.now') as mock_tz_now:
-    expected_datetime = datetime(2018, 1, 1, 10, 10)
+    expected_datetime = datetime(2018, 1, 1, 10, 10, tzinfo=timezone.utc)
     mock_tz_now.return_value = expected_datetime
 ```
 
 By using that code in our test we know that the date that `django.utils.timezone.now` returns will be ten minutes past ten on January 1st, 2018.
 
-Let's add a test that using this pattern and forces us to generalise our solution.
+Let's add a test that uses this pattern and forces us to generalise our solution.
 
 <div style="display: flex; flex-basis: 50%;">
 
@@ -456,7 +460,7 @@ class TimeApiTestCase(TestCase):
 
     def test_time_api_should_return_current_utc_time(self):
         with patch('django.utils.timezone.now') as mock_tz_now:
-            expected_datetime = datetime(2018, 1, 1, 10, 10)
+            expected_datetime = datetime(2018, 1, 1, 10, 10, tzinfo=timezone.utc)
             mock_tz_now.return_value = expected_datetime
 
             response = self.client.get('/api/time/')
@@ -518,7 +522,7 @@ class TimeApiTestCase(TestCase):
 
     def test_time_api_should_return_current_utc_time(self):
         with patch('django.utils.timezone.now') as mock_tz_now:
-            expected_datetime = datetime(2018, 1, 1, 10, 10)
+            expected_datetime = datetime(2018, 1, 1, 10, 10, tzinfo=timezone.utc)
             mock_tz_now.return_value = expected_datetime
 
             response = self.client.get('/api/time/')
@@ -663,7 +667,7 @@ class TimeApiTestCase(TestCase):
 
     def test_time_api_should_return_current_utc_time(self):
         with patch('django.utils.timezone.now') as mock_tz_now:
-            expected_datetime = datetime(2018, 1, 1, 10, 10)
+            expected_datetime = datetime(2018, 1, 1, 10, 10, tzinfo=timezone.utc)
             mock_tz_now.return_value = expected_datetime
 
             response = self.client.get('/api/time/')
@@ -673,4 +677,6 @@ class TimeApiTestCase(TestCase):
             self.assertEqual(parsed_time, expected_datetime)
 ```
 
-Cool. Run the tests one last time to make sure that they're still being discovered. 5 tests passing? Time for a celebratory coffee ☕️
+Cool. Run the tests one last time to make sure that they're still being discovered. All tests passing? Time for a celebratory coffee ☕️
+
+So, that's how I did it. In the next step you'll face your first challenge: write the same view by writing the tests first and seeing them fail.
