@@ -21,6 +21,7 @@ We can write a simple test to ensure that we receive a 200 OK from the endpoint.
 The Django test Client handles a lot of the heavy lifting for us – we will use `self.client.get()` to make a HTTP request to our desired endpoint, and `response.status_code` to confirm the status code.
 
 <div style="display: flex; flex-basis: 50%;">
+
 ```python
 # time_api/tests.py
 from django.test import TestCase
@@ -31,9 +32,11 @@ class TimeApiTestCase(TestCase):
         response = self.client.get('/api/time/')
         self.assertEqual(200, response.status_code)
 ```
+
 ```python
 # time_api/urls.py
 ```
+
 </div>
 
 Run the test to make sure it fails, and fails for the right reason.
@@ -310,6 +313,7 @@ Now it's time to return an actual date.
 We need to format it the ISO 8601 format, and we can test that by parsing it in our test and confirming we receive a datetime object.
 
 <div style="display: flex; flex-basis: 50%;">
+
 ```python
 # time_api/tests.py
 from django.test import TestCase
@@ -334,6 +338,7 @@ class TimeApiTestCase(TestCase):
         dt = datetime.strptime(current_time, '%Y-%m-%dT%H:%M:%SZ')
         self.assertTrue(isinstance(dt, datetime))
 ```
+
 ```python
 # time_api/urls.py
 from django.contrib import admin
@@ -350,6 +355,7 @@ urlpatterns = [
     path('api/time/', time_api),
 ]
 ```
+
 </div>
 
 When we run those tests we notice something interesting.
