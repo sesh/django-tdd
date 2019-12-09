@@ -1,0 +1,711 @@
+<h1>Time API Kata</h1>
+
+<p>Follow along as we complete our first user story using TDD.</p>
+
+<hr />
+
+<h2>As a user I want to receive the current UTC time so I can ensure my clock is correct</h2>
+
+<ul>
+<li>The <code>/api/time</code> endpoint should return a JSON response with a <code>current_time</code> key</li>
+<li>If successful, the status code should be 200 OK</li>
+<li>All times should be in ISO 8601 format</li>
+</ul>
+
+<p>For now, just follow along. You'll write your own version in the next step.</p>
+
+<hr />
+
+<p>Let's start by thinking about the smallest piece of this story.
+To me that's that the URL will be <code>/api/time/</code>.
+We can write a simple test to ensure that we receive a 200 OK from the endpoint.</p>
+
+<p>The Django test Client handles a lot of the heavy lifting for us – we will use <code>self.client.get()</code> to make a HTTP request to our desired endpoint, and <code>response.status_code</code> to confirm the status code.</p>
+
+<p>```python</p>
+
+<h1>time_api/tests.py</h1>
+
+<p>from django.test import TestCase</p>
+
+<p>class TimeApiTestCase(TestCase):</p>
+
+<pre><code>def test_time_url_is_status_okay(self):
+    response = self.client.get('/api/time/')
+    self.assertEqual(200, response.status_code)
+</code></pre>
+
+<p>```</p>
+
+<p>```python</p>
+
+<h1>time_api/urls.py</h1>
+
+<p>```</p>
+
+<p>Run the test to make sure it fails, and fails for the right reason.
+We receive a message saying the 404 is not 200.</p>
+
+<p>Django is successfully handling the request and returning the default 404 template for us.</p>
+
+<p>Although this it being ran by the Python "unit test" framework this is an integration test.
+When we make the call the <code>Client.get()</code> the full Django request / response lifecycle is ran.
+For now that's okay, but we should look at how we can separate smaller units in the future.</p>
+
+<p>Let's add some code to our <code>urls.py</code> to make our URL work.
+Remember that we want to write the smallest amount of code we can to make the test pass.</p>
+
+<p>We'll add the path (#1), create the view (#2) and return a HttpResponse (#3) to make our test happy.</p>
+
+<p>```python</p>
+
+<h1>time_api/tests.py</h1>
+
+<p>from django.test import TestCase</p>
+
+<p>class TimeApiTestCase(TestCase):</p>
+
+<pre><code>def test_time_url_is_status_okay(self):
+    response = self.client.get('/api/time/')
+    self.assertEqual(200, response.status_code)
+</code></pre>
+
+<p>```</p>
+
+<p>```python</p>
+
+<h1>time_api/urls.py</h1>
+
+<p>from django.contrib import admin
+from django.urls import path</p>
+
+<p>from django.http import HttpResponse  # 3</p>
+
+<p>def time_api(request):  # 2
+    return HttpResponse()</p>
+
+<p>urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('api/time/', time_api),  # 1
+]</p>
+
+<p>```</p>
+
+<p>We've just written our first piece of code that was <strong>test driven</strong>. Congratulations 👏</p>
+
+<p>Now we need to think about whether or not we should keep going or refactor some of this code.
+For now I think we should continue. What do you think?</p>
+
+<p>The second piece of functionality is the the API should return a JSON response.
+You're probably already thinking about how you will write the code to satify this, but what about the test?</p>
+
+<p>The response object that the Django Test Client returns allows us to access the HTTP Headers using the dictionary syntax.
+Thanks to this we can write a test that confirms the response's Content-Type is application/json.</p>
+
+<p>```python</p>
+
+<h1>time_api/tests.py</h1>
+
+<p>from django.test import TestCase</p>
+
+<p>class TimeApiTestCase(TestCase):</p>
+
+<pre><code>def test_time_url_is_status_okay(self):
+    response = self.client.get('/api/time/')
+    self.assertEqual(200, response.status_code)
+
+def test_time_api_should_return_json(self):
+response = self.client.get('/api/time/')
+self.assertEqual('application/json', response['Content-Type'])
+</code></pre>
+
+<p>```</p>
+
+<p>```python</p>
+
+<h1>time_api/urls.py</h1>
+
+<p>from django.contrib import admin
+from django.urls import path</p>
+
+<p>from django.http import HttpResponse</p>
+
+<p>def time_api(request):
+    return HttpResponse()</p>
+
+<p>urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('api/time/', time_api),
+]</p>
+
+<p>```</p>
+
+<p>When we run the tests we see that <code>text/html</code> doesn't equal <code>application/json</code>.
+Of course it doesn't!</p>
+
+<p>The simplest way to make this test pass is to replace our <code>HttpResponse</code> with <code>JsonResponse</code> (#1, #2).
+Django's built-in <code>JsonResponse</code> will handle serialisation for us and make our life far simpler going forward.</p>
+
+<p>```python</p>
+
+<h1>time_api/tests.py</h1>
+
+<p>from django.test import TestCase</p>
+
+<p>class TimeApiTestCase(TestCase):</p>
+
+<pre><code>def test_time_url_is_status_okay(self):
+    response = self.client.get('/api/time/')
+    self.assertEqual(200, response.status_code)
+
+def test_time_api_should_return_json(self):
+response = self.client.get('/api/time/')
+self.assertEqual('application/json', response['Content-Type'])
+</code></pre>
+
+<p>```</p>
+
+<p>```python</p>
+
+<h1>time_api/urls.py</h1>
+
+<p>from django.contrib import admin
+from django.urls import path</p>
+
+<p>from django.http import HttpResponse, JsonResponse  # 2</p>
+
+<p>def time_api(request):
+    return JsonResponse({})  # 1</p>
+
+<p>urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('api/time/', time_api),
+]
+```</p>
+
+<p>Should we refactor?</p>
+
+<p>Yes!
+Let's remove that unused <code>HttpResponse</code> import and rearrange the imports to make the always pedantic isort happy.</p>
+
+<p>```python</p>
+
+<h1>time_api/tests.py</h1>
+
+<p>from django.test import TestCase</p>
+
+<p>class TimeApiTestCase(TestCase):</p>
+
+<pre><code>def test_time_url_is_status_okay(self):
+    response = self.client.get('/api/time/')
+    self.assertEqual(200, response.status_code)
+
+def test_time_api_should_return_json(self):
+    response = self.client.get('/api/time/')
+    self.assertEqual('application/json', response['Content-Type'])
+</code></pre>
+
+<p>```</p>
+
+<p>```python</p>
+
+<h1>time_api/urls.py</h1>
+
+<p>from django.contrib import admin
+from django.http import JsonResponse
+from django.urls import path</p>
+
+<p>def time_api(request):
+    return JsonResponse({})</p>
+
+<p>urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('api/time/', time_api),
+]
+```</p>
+
+<p>Great. We have two passing tests and we've just done our first refactor to make the code more readable.</p>
+
+<p>Let's continue with the next part of this feature: returning the <code>current_time</code> key in the response.</p>
+
+<p>The test case is again very simple (notice a trend?).
+Once we have the response, we use the <code>.json()</code> function to convert it to a dictionary, and the <code>in</code> operator to check for our expected key.</p>
+
+<p>```python</p>
+
+<h1>time_api/tests.py</h1>
+
+<p>from django.test import TestCase</p>
+
+<p>class TimeApiTestCase(TestCase):</p>
+
+<pre><code>def test_time_url_is_status_okay(self):
+    response = self.client.get('/api/time/')
+    self.assertEqual(200, response.status_code)
+
+def test_time_api_should_return_json(self):
+    response = self.client.get('/api/time/')
+    self.assertEqual('application/json', response['Content-Type'])
+
+def test_time_api_should_include_current_time_key(self):
+    response = self.client.get('/api/time/')
+    self.assertTrue('current_time' in response.json())
+</code></pre>
+
+<p>```</p>
+
+<p>```python</p>
+
+<h1>time_api/urls.py</h1>
+
+<p>from django.contrib import admin
+from django.http import JsonResponse
+from django.urls import path</p>
+
+<p>def time_api(request):
+    return JsonResponse({})</p>
+
+<p>urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('api/time/', time_api),
+]
+```</p>
+
+<p>All going well things fail for the correct reason here.
+The key "current_time" shouldn't exist in our JSON response.</p>
+
+<p>Let's update our view to return the expected key (#1). For now there's no reason (test!) to return anything other than an empty string.</p>
+
+<p>```python</p>
+
+<h1>time_api/tests.py</h1>
+
+<p>from django.test import TestCase</p>
+
+<p>class TimeApiTestCase(TestCase):</p>
+
+<pre><code>def test_time_url_is_status_okay(self):
+    response = self.client.get('/api/time/')
+    self.assertEqual(200, response.status_code)
+
+def test_time_api_should_return_json(self):
+    response = self.client.get('/api/time/')
+    self.assertEqual('application/json', response['Content-Type'])
+
+def test_time_api_should_include_current_time_key(self):
+    response = self.client.get('/api/time/')
+    self.assertTrue('current_time' in response.json())
+</code></pre>
+
+<p>```</p>
+
+<p>```python</p>
+
+<h1>time_api/urls.py</h1>
+
+<p>from django.contrib import admin
+from django.http import JsonResponse
+from django.urls import path</p>
+
+<p>def time<em>api(request):
+    return JsonResponse({
+        'current</em>time': ''  # 1
+    })</p>
+
+<p>urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('api/time/', time_api),
+]
+```</p>
+
+<p>We run the tests and make sure that they're passing.
+They should be! We're returning the response exactly as we want it.</p>
+
+<p>Again think about refactoring this code.
+For now I think we're okay...
+But it's your turn next so think about if there's anything you're interested in changing.</p>
+
+<p>Now it's time to return an actual date.
+We need to format it the ISO 8601 format, and we can test that by parsing it in our test and confirming we receive a datetime object.</p>
+
+<p>```python</p>
+
+<h1>time_api/tests.py</h1>
+
+<p>from django.test import TestCase</p>
+
+<p>class TimeApiTestCase(TestCase):</p>
+
+<pre><code>def test_time_url_is_status_okay(self):
+    response = self.client.get('/api/time/')
+    self.assertEqual(200, response.status_code)
+
+def test_time_api_should_return_json(self):
+    response = self.client.get('/api/time/')
+    self.assertEqual('application/json', response['Content-Type'])
+
+def test_time_api_should_include_current_time_key(self):
+    response = self.client.get('/api/time/')
+    self.assertTrue('current_time' in response.json())
+
+def test_time_api_should_return_valid_iso8601_format(self):
+    response = self.client.get('/api/time/')
+    current_time = response.json()['current_time']
+    dt = datetime.strptime(current_time, '%Y-%m-%dT%H:%M:%SZ')
+    self.assertTrue(isinstance(dt, datetime))
+</code></pre>
+
+<p>```</p>
+
+<p>```python</p>
+
+<h1>time_api/urls.py</h1>
+
+<p>from django.contrib import admin
+from django.http import JsonResponse
+from django.urls import path</p>
+
+<p>def time<em>api(request):
+    return JsonResponse({
+        'current</em>time': ''
+    })</p>
+
+<p>urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('api/time/', time_api),
+]
+```</p>
+
+<p>When we run those tests we notice something interesting.
+The test<em>time</em>api<em>should</em>return<em>valid</em>iso8601<em>format isn't _failing</em> but rather <em>erroring</em>.</p>
+
+<p>Think about the simplest code the we can write to make this pass for a moment.
+Do we need to return the <em>current time</em> for this test to pass? No, we don't.</p>
+
+<p>Let's update the view return a valid date. In this case, the release date of In Rainbows by Radiohead.</p>
+
+<p>```python</p>
+
+<h1>time_api/tests.py</h1>
+
+<p>from django.test import TestCase</p>
+
+<p>class TimeApiTestCase(TestCase):</p>
+
+<pre><code>def test_time_url_is_status_okay(self):
+    response = self.client.get('/api/time/')
+    self.assertEqual(200, response.status_code)
+
+def test_time_api_should_return_json(self):
+    response = self.client.get('/api/time/')
+    self.assertEqual('application/json', response['Content-Type'])
+
+def test_time_api_should_include_current_time_key(self):
+    response = self.client.get('/api/time/')
+    self.assertTrue('current_time' in response.json())
+
+def test_time_api_should_return_valid_iso8601_format(self):
+    response = self.client.get('/api/time/')
+    current_time = response.json()['current_time']
+    dt = datetime.strptime(current_time, '%Y-%m-%dT%H:%M:%SZ')
+    self.assertTrue(isinstance(dt, datetime))
+</code></pre>
+
+<p>```</p>
+
+<p>```python</p>
+
+<h1>time_api/urls.py</h1>
+
+<p>from django.contrib import admin
+from django.http import JsonResponse
+from django.urls import path</p>
+
+<p>def time<em>api(request):
+    return JsonResponse({
+        'current</em>time': '2007-10-10T08:00:00Z'
+    })</p>
+
+<p>urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('api/time/', time_api),
+]
+```</p>
+
+<p>What we did there was writing the <em>simplest piece of code</em> that we needed to.
+Our test passes with flying colours since we aren't testing anything other than that we're returning a valid datetime.</p>
+
+<p>At this point we can refactor to <strong>generalise</strong> the solution.
+In this position there's a better option though: let's add a new test that forces us to <strong>generalise</strong> the solution.</p>
+
+<p>By using the mocking library build into Python 3 we can know in advance the date that we'll return from a call to Django's <code>timezone.now()</code>.</p>
+
+<p>What we're about to do is called "patching the response" and works a like this:</p>
+
+<p><code>python
+with patch('django.utils.timezone.now') as mock_tz_now:
+    expected_datetime = datetime(2018, 1, 1, 10, 10, tzinfo=timezone.utc)
+    mock_tz_now.return_value = expected_datetime
+</code></p>
+
+<p>By using that code in our test we know that the date that <code>django.utils.timezone.now</code> returns will be ten minutes past ten on January 1st, 2018.</p>
+
+<p>Let's add a test that uses this pattern and forces us to generalise our solution.</p>
+
+<p>```python</p>
+
+<h1>time_api/tests.py</h1>
+
+<p>from django.test import TestCase</p>
+
+<p>class TimeApiTestCase(TestCase):</p>
+
+<pre><code>def test_time_url_is_status_okay(self):
+    response = self.client.get('/api/time/')
+    self.assertEqual(200, response.status_code)
+
+def test_time_api_should_return_json(self):
+    response = self.client.get('/api/time/')
+    self.assertEqual('application/json', response['Content-Type'])
+
+def test_time_api_should_include_current_time_key(self):
+    response = self.client.get('/api/time/')
+    self.assertTrue('current_time' in response.json())
+
+def test_time_api_should_return_valid_iso8601_format(self):
+    response = self.client.get('/api/time/')
+    current_time = response.json()['current_time']
+    dt = datetime.strptime(current_time, '%Y-%m-%dT%H:%M:%SZ')
+    self.assertTrue(isinstance(dt, datetime))
+
+def test_time_api_should_return_current_utc_time(self):
+    with patch('django.utils.timezone.now') as mock_tz_now:
+        expected_datetime = datetime(2018, 1, 1, 10, 10, tzinfo=timezone.utc)
+        mock_tz_now.return_value = expected_datetime
+
+        response = self.client.get('/api/time/')
+        current_time = response.json()['current_time']
+        parsed_time = datetime.strptime(current_time, '%Y-%m-%dT%H:%M:%SZ')
+
+        self.assertEqual(parsed_time, expected_datetime)
+</code></pre>
+
+<p>```</p>
+
+<p>```python</p>
+
+<h1>time_api/urls.py</h1>
+
+<p>from django.contrib import admin
+from django.http import JsonResponse
+from django.urls import path</p>
+
+<p>def time<em>api(request):
+    return JsonResponse({
+        'current</em>time': '2007-10-10T08:00:00Z'
+    })</p>
+
+<p>urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('api/time/', time_api),
+]
+```</p>
+
+<p>Run the tests and make sure it fails.
+It should complain that <em>whatever time it is now</em> isn't the same as when Radiohead released In Rainbows (2007-10-10T08:00:00Z).</p>
+
+<p>Now we can using <code>timezone.now()</code> (#1) to return the current time and <code>strftime()</code> (#2) to make sure it's formatted correctly.</p>
+
+<p>```python</p>
+
+<h1>time_api/tests.py</h1>
+
+<p>from django.test import TestCase</p>
+
+<p>class TimeApiTestCase(TestCase):</p>
+
+<pre><code>def test_time_url_is_status_okay(self):
+    response = self.client.get('/api/time/')
+    self.assertEqual(200, response.status_code)
+
+def test_time_api_should_return_json(self):
+    response = self.client.get('/api/time/')
+    self.assertEqual('application/json', response['Content-Type'])
+
+def test_time_api_should_include_current_time_key(self):
+    response = self.client.get('/api/time/')
+    self.assertTrue('current_time' in response.json())
+
+def test_time_api_should_return_valid_iso8601_format(self):
+    response = self.client.get('/api/time/')
+    current_time = response.json()['current_time']
+    dt = datetime.strptime(current_time, '%Y-%m-%dT%H:%M:%SZ')
+    self.assertTrue(isinstance(dt, datetime))
+
+def test_time_api_should_return_current_utc_time(self):
+    with patch('django.utils.timezone.now') as mock_tz_now:
+        expected_datetime = datetime(2018, 1, 1, 10, 10, tzinfo=timezone.utc)
+        mock_tz_now.return_value = expected_datetime
+
+        response = self.client.get('/api/time/')
+        current_time = response.json()['current_time']
+        parsed_time = datetime.strptime(current_time, '%Y-%m-%dT%H:%M:%SZ')
+
+        self.assertEqual(parsed_time, expected_datetime)
+</code></pre>
+
+<p>```</p>
+
+<p>```python</p>
+
+<h1>time_api/urls.py</h1>
+
+<p>from django.contrib import admin
+from django.http import JsonResponse
+from django.urls import path
+from django.utils import timezone</p>
+
+<p>def time<em>api(request):
+    return JsonResponse({
+        'current</em>time': timezone.now().strftime('%Y-%m-%dT%H:%M:%SZ')  # 2
+    })</p>
+
+<p>urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('api/time/', time_api),
+]
+```</p>
+
+<p>Run the tests and make sure they're happy.
+At this point we've <em>finished</em> the features of the story. Nice one!</p>
+
+<p>Let's think about refactoring though. There's a few things that I think we can make better.</p>
+
+<p>Firstly, we can move the magic time formatting string into our settings (#1) and update our view to use the setting instead of having the string hard coded (#2, #3).</p>
+
+<p>```python</p>
+
+<h1>time_api/settings.py</h1>
+
+<p>DATETIME_FORMAT = '%Y-%m-%dT%H:%M:%SZ'  # 1
+```</p>
+
+<p>```python</p>
+
+<h1>time_api/urls.py</h1>
+
+<p>from django.conf import settings
+from django.contrib import admin
+from django.http import JsonResponse
+from django.urls import path
+from django.utils import timezone</p>
+
+<p>def time<em>api(request):
+    return JsonResponse({
+        'current</em>time': timezone.now().strftime(settings.DATETIME_FORMAT)  # 2
+    })</p>
+
+<p>urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('api/time/', time_api),
+]
+```</p>
+
+<p>Run the tests and make sure that our change hasn't broken anything. Nope? All good, let's keep going.</p>
+
+<p>While it's perfectly fine to have this view in our <code>urls.py</code>, the "Django-way" is to add views like this into their own apps.
+Let's do that now, making sure that our tests still pass along the way.</p>
+
+<p>Firstly, let's create a new app called times.</p>
+
+<p>```bash</p>
+
+<blockquote>
+  <p>./manage.py startapp times
+  ```</p>
+</blockquote>
+
+<p>Then we migrate our view code into <code>times/views.py</code> and update <code>time_api/urls.py</code> to point at that view.</p>
+
+<p>```python</p>
+
+<h1>times/views.py</h1>
+
+<p>from django.conf import settings
+from django.http import JsonResponse
+from django.utils import timezone</p>
+
+<p>def time<em>api(request):
+    return JsonResponse({
+        'current</em>time': timezone.now().strftime(settings.DATETIME_FORMAT)
+    })
+```</p>
+
+<p>```python</p>
+
+<h1>time_api/urls.py</h1>
+
+<p>from django.contrib import admin
+from django.urls import path</p>
+
+<p>from times.views import time_api</p>
+
+<p>urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('api/time/', time_api),
+]
+```</p>
+
+<p>We used this as a chance to clean up the imports in our <code>urls.py</code> as well – most of those aren't needed any more.</p>
+
+<p>Now is a good time to run the tests and make sure they're still being discovered and passing. Green? Great.</p>
+
+<p>As a final step, let's move the tests into <code>times/tests.py</code> so that they are closer to the code that they're testing.</p>
+
+<p>```python</p>
+
+<h1>times/tests.py</h1>
+
+<p>from datetime import datetime
+from unittest.mock import patch</p>
+
+<p>from django.test import TestCase</p>
+
+<p>class TimeApiTestCase(TestCase):</p>
+
+<pre><code>def test_time_url_is_status_okay(self):
+    response = self.client.get('/api/time/')
+    self.assertEqual(200, response.status_code)
+
+def test_time_api_should_return_json(self):
+    response = self.client.get('/api/time/')
+    self.assertEqual('application/json', response['Content-Type'])
+
+
+def test_time_api_should_include_current_time_key(self):
+    response = self.client.get('/api/time/')
+    self.assertTrue('current_time' in response.json())
+
+def test_time_api_should_return_valid_iso8601_format(self):
+    response = self.client.get('/api/time/')
+    current_time = response.json()['current_time']
+    dt = datetime.strptime(current_time, '%Y-%m-%dT%H:%M:%SZ')
+    self.assertTrue(isinstance(dt, datetime))
+
+def test_time_api_should_return_current_utc_time(self):
+    with patch('django.utils.timezone.now') as mock_tz_now:
+        expected_datetime = datetime(2018, 1, 1, 10, 10, tzinfo=timezone.utc)
+        mock_tz_now.return_value = expected_datetime
+
+        response = self.client.get('/api/time/')
+        current_time = response.json()['current_time']
+        parsed_time = datetime.strptime(current_time, '%Y-%m-%dT%H:%M:%SZ')
+
+        self.assertEqual(parsed_time, expected_datetime)
+</code></pre>
+
+<p>```</p>
+
+<p>Cool. Run the tests one last time to make sure that they're still being discovered. All tests passing? Time for a celebratory coffee ☕️</p>
+
+<p>So, that's how I did it. In the next step you'll face your first challenge: write the same view by writing the tests first and seeing them fail.</p>
