@@ -1,7 +1,7 @@
 # Getting Ready to Start Coding
 
-This workshop uses Python 3.6 which you should install based on the instructions for your system.
-We will create a Django project using Django 2.0 inside of a virtual environment.
+This workshop uses Python 3 which you should install based on the instructions for your system.
+We will create a Django project inside of a virtual environment.
 
 To get started create a virtual environment with Python and activate it:
 
@@ -40,7 +40,7 @@ db.sqlite3
 __pycache__
 ```
 
-It's time to initialise your git repository, and add our project files.
+Initialise your git repository, and add our project files. It's handy to commit regularly so that you can step back through your work.
 
 ```bash
 (time_api_venv)> git init

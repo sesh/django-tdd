@@ -6,7 +6,7 @@ My name is _Brenton Cleeland_
 
 ---
 
-I work at _Thoughworks_ in Melbourne 🇦🇺
+I work at _Thoughtworks_ in Melbourne 🇦🇺
 
 ---
 

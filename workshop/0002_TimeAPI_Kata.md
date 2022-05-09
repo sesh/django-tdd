@@ -15,10 +15,11 @@ For now, just follow along. You'll write your own version in the next step.
 ---
 
 Let's start by thinking about the smallest piece of this story.
-To me that's that the URL will be `/api/time/`.
-We can write a simple test to ensure that we receive a 200 OK from the endpoint.
 
-The Django test Client handles a lot of the heavy lifting for us – we will use `self.client.get()` to make a HTTP request to our desired endpoint, and `response.status_code` to confirm the status code.
+To me that's that the URL will be `/api/time/`.
+We can write a simple test to ensure that we receive a 200 OK response from the endpoint.
+
+The Django test client handles a lot of the heavy lifting for us – we will use `self.client.get()` to make a HTTP request to our desired endpoint, and `response.status_code` to confirm the status code of the response.
 
 ```python
 # time_api/tests.py
@@ -40,9 +41,8 @@ We receive a message saying the 404 is not 200.
 
 Django is successfully handling the request and returning the default 404 template for us.
 
-Although this it being ran by the Python "unit test" framework this is an integration test.
-When we make the call the `Client.get()` the full Django request / response lifecycle is ran.
-For now that's okay, but we should look at how we can separate smaller units in the future.
+Although this it being ran by Python's `unittest` framework this is what we would call an integration test.
+When we make the request with `Client.get()` the full Django request / response lifecycle is ran.
 
 Let's add some code to our `urls.py` to make our URL work.
 Remember that we want to write the smallest amount of code we can to make the test pass.
@@ -83,10 +83,10 @@ Now we need to think about whether or not we should keep going or refactor some 
 For now I think we should continue. What do you think?
 
 The second piece of functionality is the the API should return a JSON response.
-You're probably already thinking about how you will write the code to satify this, but what about the test?
+You're probably already thinking about how you will write the code to satisfy this, but what about the test?
 
-The response object that the Django Test Client returns allows us to access the HTTP Headers using the dictionary syntax.
-Thanks to this we can write a test that confirms the response's Content-Type is application/json.
+The response object that the Django test client returns allows us to access the HTTP response headers as a dictionary.
+Thanks to this we can write a test that confirms that the Content-Type is application/json.
 
 ```python
 # time_api/tests.py
@@ -99,8 +99,8 @@ class TimeApiTestCase(TestCase):
         self.assertEqual(200, response.status_code)
 
     def test_time_api_should_return_json(self):
-    response = self.client.get('/api/time/')
-    self.assertEqual('application/json', response['Content-Type'])
+        response = self.client.get('/api/time/')
+        self.assertEqual('application/json', response['Content-Type'])
 ```
 
 ```python
@@ -137,8 +137,8 @@ class TimeApiTestCase(TestCase):
         self.assertEqual(200, response.status_code)
 
     def test_time_api_should_return_json(self):
-    response = self.client.get('/api/time/')
-    self.assertEqual('application/json', response['Content-Type'])
+        response = self.client.get('/api/time/')
+        self.assertEqual('application/json', response['Content-Type'])
 ```
 
 ```python
@@ -160,7 +160,7 @@ urlpatterns = [
 Should we refactor?
 
 Yes!
-Let's remove that unused `HttpResponse` import and rearrange the imports to make the always pedantic isort happy.
+Let's remove that unused `HttpResponse` import and rearrange the imports to make the always pedantic `isort` happy.
 
 ```python
 # time_api/tests.py
@@ -233,7 +233,7 @@ urlpatterns = [
 ]
 ```
 
-All going well things fail for the correct reason here.
+All going well our tests fail for the correct reason here.
 The key "current_time" shouldn't exist in our JSON response.
 
 Let's update our view to return the expected key (#1). For now there's no reason (test!) to return anything other than an empty string.
@@ -275,14 +275,14 @@ urlpatterns = [
 ```
 
 We run the tests and make sure that they're passing.
-They should be! We're returning the response exactly as we want it.
+They should be! We're shaping up this response exactly how we want it.
 
 Again think about refactoring this code.
 For now I think we're okay...
-But it's your turn next so think about if there's anything you're interested in changing.
+It's your turn next so think about if there's anything you're interested in changing.
 
 Now it's time to return an actual date.
-We need to format it the ISO 8601 format, and we can test that by parsing it in our test and confirming we receive a datetime object.
+We need to format it the ISO 8601 format, and we can test that by parsing it in our test and confirming we receive a `datetime` object.
 
 ```python
 # time_api/tests.py
@@ -327,12 +327,13 @@ urlpatterns = [
 ```
 
 When we run those tests we notice something interesting.
-The test_time_api_should_return_valid_iso8601_format isn't _failing_ but rather _erroring_.
+The `test_time_api_should_return_valid_iso8601_format` isn't _failing_ but rather _erroring_.
 
 Think about the simplest code the we can write to make this pass for a moment.
 Do we need to return the _current time_ for this test to pass? No, we don't.
 
-Let's update the view return a valid date. In this case, the release date of In Rainbows by Radiohead.
+Let's update the view return a valid date.
+In this case, the release date of In Rainbows by Radiohead.
 
 ```python
 # time_api/tests.py
@@ -377,12 +378,12 @@ urlpatterns = [
 ```
 
 What we did there was writing the _simplest piece of code_ that we needed to.
-Our test passes with flying colours since we aren't testing anything other than that we're returning a valid datetime.
+Our test passes with flying colours since we aren't testing anything other than that we're returning a valid `datetime`.
 
-At this point we can refactor to **generalise** the solution.
-In this position there's a better option though: let's add a new test that forces us to **generalise** the solution.
+At this point we could refactor to **generalise** the solution.
+There's a better option though: let's add a new test that forces us to **generalise** the solution.
 
-By using the mocking library build into Python 3 we can know in advance the date that we'll return from a call to Django's `timezone.now()`.
+By using the mocking library built into Python 3 we can know in advance the date that we'll return from a call to Django's `timezone.now()`.
 
 What we're about to do is called "patching the response" and works a like this:
 
@@ -625,6 +626,7 @@ class TimeApiTestCase(TestCase):
             self.assertEqual(parsed_time, expected_datetime)
 ```
 
-Cool. Run the tests one last time to make sure that they're still being discovered. All tests passing? Time for a celebratory coffee ☕️
+Cool. Run the tests one last time to make sure that they're still being discovered.
+All tests passing? Time for a celebratory coffee ☕️
 
 So, that's how I did it. In the next step you'll face your first challenge: write the same view by writing the tests first and seeing them fail.
